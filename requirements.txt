@@ -3,3 +3,5 @@ uvicorn
 streamlit
 requests
 pydantic
+sentence-transformers
+scikit-learn
