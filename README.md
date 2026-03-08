@@ -1,176 +1,284 @@
-Overview
-NOVA ESTEEM (REZUAI) is a full-stack AI-powered resume analysis and optimization platform that helps job seekers maximize their chances of landing interviews. It combines NLP-based semantic analysis, machine learning models, and LLM-powered rewriting to provide deep insights into how well a resume matches a specific job description — and then automatically tailors it for maximum impact.
+NOVA ESTEEM (REZUAI)
 
-"Don't just submit your resume. Submit the right resume."
+NOVA ESTEEM is a full-stack AI-powered resume analysis and optimization platform designed to help job seekers maximize their chances of landing interviews.
+
+The system analyzes how well a resume aligns with a specific job description using NLP-based semantic analysis, machine learning scoring models, and LLM-powered rewriting. It then identifies gaps, evaluates rejection risk, and automatically tailors the resume for stronger alignment with employer expectations.
+
+Don't just submit your resume. Submit the right resume.
 
 Key Features
 Intelligent Resume Analysis
-Hybrid Scoring Engine — Combines semantic similarity (Sentence Transformers + Cosine Similarity) with skill-match ratios for a nuanced overall score
-Technical Score — Measures hard skill alignment between resume and job description
-Personality Score — Evaluates soft skill signals (leadership, teamwork, communication, etc.) using NLP trait matching
-Domain Detection — Automatically identifies the target role domain (Data/AI, Web Dev, DevOps, etc.)
+
+Hybrid Scoring Engine
+
+Combines multiple analytical signals to evaluate resume alignment:
+
+Semantic Similarity — Sentence Transformers with cosine similarity measure contextual alignment between resume and job description.
+
+Skill Match Ratio — Extracted technical skills from both documents are compared to quantify skill overlap.
+
+Technical Score
+
+Measures how well the resume’s hard skills match the requirements of the job description.
+
+Personality Score
+
+Evaluates soft skill indicators such as:
+
+leadership
+
+teamwork
+
+communication
+
+problem solving
+
+using NLP-based trait matching.
+
+Domain Detection
+
+Automatically identifies the professional domain of the job description (Data/AI, Web Development, DevOps, etc.).
+
 Dynamic Gap Analysis
-Contextual Gap Detection — Identifies missing skills, quantification gaps, and content weaknesses with severity ratings (Critical to Low)
-JD Priority Extraction — Parses job descriptions to determine what the employer values most
-Score Explanations — Natural language explanations for each score, so you know why you scored what you did
+
+The system identifies weaknesses in a resume with contextual severity levels.
+
+Contextual Gap Detection
+
+Detects issues such as:
+
+missing skills
+
+lack of quantifiable achievements
+
+weak content in critical sections
+
+Each gap is assigned a severity rating:
+
+Critical
+
+High
+
+Medium
+
+Low
+
+Job Description Priority Extraction
+
+Analyzes job descriptions to determine the most important skills and requirements for the role.
+
+Score Explanations
+
+Natural language explanations clarify why a resume received a specific score, improving transparency and user understanding.
+
 Rejection Risk Assessment
-Risk Level Calculation — Evaluates your rejection risk (Low / Medium / High / Critical) based on gaps and section scores
-Risk Factor Breakdown — Detailed factors with severity, impact, and actionable details
-Dynamic Risk Summary — Context-aware summaries explaining your biggest vulnerabilities
+
+The platform estimates the likelihood that a resume may be rejected by recruiters or ATS systems.
+
+Risk Level Calculation
+
+Classifies rejection probability into:
+
+Low
+
+Medium
+
+High
+
+Critical
+
+Risk Factor Breakdown
+
+Provides detailed explanations for risk contributors including severity, impact, and reasoning.
+
+Dynamic Risk Summary
+
+A context-aware summary explaining the largest weaknesses affecting the resume.
+
 Personalized Recommendations
-Prioritized Action Items — Ranked recommendations with severity, reasoning, and estimated impact
-Actionable Suggestions — Specific steps like "Add Python to your skills section" rather than generic advice
+
+The system generates prioritized, actionable guidance to improve resume performance.
+
+Prioritized Action Items
+
+Suggestions are ranked by expected impact and severity.
+
+Actionable Improvements
+
+Examples include:
+
+adding missing skills to the skills section
+
+quantifying experience bullet points
+
+restructuring sections for better ATS compatibility
+
 AI-Powered Resume Tailoring
-LLM Resume Rewriting — Uses GPT-4o / Ollama (Llama) with OpenAI-fallback to intelligently rewrite your resume
-Keyword Saturation — Post-processing ensures all critical missing keywords are naturally integrated
-Structured Output — Generates a fully structured JSON representation with sections, entries, and bullet points
-High-Fidelity PDF Export — Downloads a professionally formatted PDF resume via ReportLab
-User Authentication & History
-JWT-Based Auth — Secure registration and login with bcrypt password hashing
-Analysis History Dashboard — Track your scores over time with visual trend charts
-Persistent Storage — SQLite database via SQLModel ORM
+
+LLM-Based Resume Rewriting
+
+Uses large language models to intelligently rewrite resume content based on the job description.
+
+Keyword Saturation
+
+Post-processing ensures important missing keywords are naturally integrated to improve ATS performance.
+
+Structured Output
+
+The tailored resume is generated as a structured representation containing sections, entries, and bullet points.
+
+High-Fidelity PDF Export
+
+Users can download a professionally formatted resume generated using programmatic PDF rendering.
+
+User Authentication and History
+
+Secure Authentication
+
+User authentication is implemented using JWT-based sessions with encrypted password storage.
+
+Analysis History Dashboard
+
+Users can track past resume analyses and visualize performance trends.
+
+Persistent Storage
+
+Analysis data is stored using an ORM-backed relational database.
+
 Smart Document Classification
-AI-Powered Validation — Uses Google Gemini to classify uploaded documents and reject non-resumes (research papers, cover letters, etc.)
-Fallback Classification — Keyword-based heuristic when LLM is unavailable
-Architecture
+
+Before analysis begins, uploaded documents are validated to ensure they are actual resumes.
+
+AI-Powered Classification
+
+A language model classifies documents and filters out:
+
+research papers
+
+cover letters
+
+unrelated documents
+
+Fallback Validation
+
+When LLM validation is unavailable, a heuristic keyword-based classifier is used.
+
+System Architecture
 NOVA_ESTEEM/
-├── backend/                        # FastAPI Python Backend
-│   ├── main.py                     # API entry point & route definitions
-│   ├── models.py                   # Pydantic request/response schemas
-│   ├── database.py                 # SQLModel ORM (User, AnalysisHistory)
-│   ├── auth.py                     # JWT authentication & password hashing
+│
+├── backend/                 # FastAPI backend
+│   ├── main.py
+│   ├── models.py
+│   ├── database.py
+│   ├── auth.py
 │   └── services/
-│       ├── analyzer.py             # Core ML analysis engine (Sentence Transformers)
-│       ├── analyzer_dynamic.py     # Dynamic gap analysis & risk assessment
-│       ├── document_classifier.py  # Gemini-powered document classification
-│       ├── llm_rewriter.py         # Gemini-powered resume rewriting
-│       ├── tailor.py               # LLM resume tailoring + keyword saturation
-│       └── pdf_generator.py        # ReportLab PDF generation
+│       ├── analyzer.py
+│       ├── analyzer_dynamic.py
+│       ├── document_classifier.py
+│       ├── llm_rewriter.py
+│       ├── tailor.py
+│       └── pdf_generator.py
 │
-├── frontend/                       # Next.js 16 + React 19 Frontend
+├── frontend/                # Next.js frontend
 │   └── app/
-│       ├── page.tsx                # Main analysis & tailoring interface
-│       ├── login/page.tsx          # Authentication page
-│       ├── dashboard/page.tsx      # Analysis history & trends
-│       ├── services/api.ts         # Axios API client with auth interceptors
+│       ├── page.tsx
+│       ├── login/page.tsx
+│       ├── dashboard/page.tsx
+│       ├── services/api.ts
 │       └── components/
-│           ├── UploadZone.tsx          # PDF/text file upload with client-side parsing
-│           ├── ScoreGauge.tsx          # Animated circular score gauges (Recharts)
-│           ├── SkillRadar.tsx          # Radar chart for personality profile
-│           ├── PersonalityBars.tsx     # Soft skill progress bars
-│           ├── GapAnalysis.tsx         # Gap cards grouped by severity
-│           ├── RejectionRiskCard.tsx   # Risk assessment display
-│           ├── RecommendationsList.tsx # Prioritized action items
-│           └── TailorView.tsx         # Tailored resume preview + PDF download
+│           ├── UploadZone.tsx
+│           ├── ScoreGauge.tsx
+│           ├── SkillRadar.tsx
+│           ├── PersonalityBars.tsx
+│           ├── GapAnalysis.tsx
+│           ├── RejectionRiskCard.tsx
+│           ├── RecommendationsList.tsx
+│           └── TailorView.tsx
 │
-├── .env.example                    # Environment variable template
-├── requirements.txt                # Root Python dependencies
+├── requirements.txt
 └── README.md
-Tech Stack
+Technology Stack
 Layer	Technology
-Frontend	Next.js 16, React 19, TypeScript, Tailwind CSS 4
-Charts & Visualizations	Recharts (Pie, Radar, Area charts)
-PDF Parsing	pdf.js (client-side PDF text extraction)
-Backend	FastAPI, Uvicorn, Python 3.10+
-NLP / ML	Sentence Transformers (all-MiniLM-L6-v2), scikit-learn (Cosine Similarity)
-LLM Integration	Google Gemini 1.5 Flash, OpenAI GPT-4o, Ollama (local Llama)
+Frontend	Next.js, React, TypeScript, Tailwind CSS
+Visualization	Recharts
+Backend	FastAPI, Python
+NLP / ML	Sentence Transformers, scikit-learn
+LLM Integration	Gemini, GPT-4o, Llama
+Database	SQLite with SQLModel ORM
+Authentication	JWT
 PDF Generation	ReportLab
-Database	SQLite + SQLModel ORM
-Authentication	JWT (python-jose) + bcrypt (passlib)
-HTTP Client	Axios (with auth interceptors)
-Getting Started
-Prerequisites
-Python 3.10+
-Node.js 18+ & npm
-Google Gemini API Key (free from Google AI Studio)
-(Optional) OpenAI API Key for GPT-4o tailoring
-(Optional) Ollama running locally for offline LLM support
-1. Clone the Repository
-bash
-git clone https://github.com/Sairam15ravula/NOVA_ESTEEM.git
-cd NOVA_ESTEEM
-2. Set Up Environment Variables
-bash
-cp .env.example .env
-Edit 
+HTTP Client	Axios
+Analysis Pipeline
 
-.env
- and add your API keys:
+1. Document Validation
 
-env
-GEMINI_API_KEY=your_gemini_api_key_here
-OPENAI_API_KEY=your_openai_key_here     # Optional
-OLLAMA_URL=http://localhost:11434/v1     # Optional, for local LLM
-JWT_SECRET=your_random_secret_key
-3. Install & Run the Backend
-bash
-# Create a virtual environment
-python -m venv .venv
-# Activate it
-# On Windows:
-.venv\Scripts\activate
-# On macOS/Linux:
-source .venv/bin/activate
-# Install dependencies
-pip install -r backend/requirements.txt
-# Run the server
-python -m backend.main
-The API will be available at http://localhost:8000
+Uploaded files are classified to ensure they are valid resumes.
 
-4. Install & Run the Frontend
-bash
-cd frontend
-npm install
-npm run dev
-The app will be available at http://localhost:3000
+2. Text Processing
 
-API Endpoints
+Resume content is cleaned, normalized, and segmented into sections.
+
+3. Semantic Similarity
+
+Both resume and job description are encoded using a transformer model and compared using cosine similarity.
+
+4. Skill Extraction
+
+Skills are extracted from both documents and compared using a curated skill database.
+
+5. Personality Trait Analysis
+
+Language patterns are matched against trait anchor sentences to evaluate soft skills.
+
+6. Gap Detection
+
+The system identifies weaknesses and assigns severity levels.
+
+7. Rejection Risk Calculation
+
+Risk scores are generated based on detected gaps and section performance.
+
+8. Recommendation Engine
+
+Actionable improvement suggestions are produced.
+
+9. AI Resume Tailoring
+
+The resume is rewritten to better match the job description while maintaining natural language.
+
+10. PDF Generation
+
+A final tailored resume can be exported as a formatted PDF.
+
+API Overview
 Method	Endpoint	Description
 GET	/	Health check
 POST	/auth/register	Register a new user
-POST	/auth/login	Login & receive JWT token
+POST	/auth/login	Authenticate user
 POST	/analyze	Analyze resume against job description
-POST	/tailor	AI-tailor resume for a specific JD
-POST	/download-pdf	Generate & download tailored resume as PDF
-GET	/history	Get logged-in user's analysis history
-How It Works
-Valid Resume
-Not a Resume
-Upload Resume + JD
-Document Classification
-NLP Analysis Engine
-Error Message
-Semantic SimilaritySentence Transformers
-Skill Extraction& Domain Detection
-Personality TraitAnalysis
-Score CalculationTechnical + Personality + Overall
-Dynamic Gap Analysis
-Rejection Risk Assessment
-Personalized Recommendations
-Interactive Dashboard
-AI TailoringGPT-4o / Gemini / Llama
-PDF Download
-Analysis Pipeline
-Document Classification — Validates the uploaded document is actually a resume using Gemini AI
-Text Cleaning & Preprocessing — Normalizes text, extracts sections (Experience, Education, Skills, etc.)
-Semantic Similarity — Encodes resume and JD using all-MiniLM-L6-v2 Sentence Transformer model, computes cosine similarity (weighted 60% of technical score)
-Skill Matching — Extracts skills from both documents using a curated multi-domain skill database, computes match ratio (weighted 40% of technical score)
-Personality Analysis — Matches resume language against trait-specific anchor sentences using semantic similarity
-Dynamic Analysis — Identifies contextual gaps, calculates rejection risk, and generates prioritized recommendations
-AI Tailoring — Rewrites the resume using LLM with keyword saturation post-processing to guarantee ATS optimization
+POST	/tailor	Tailor resume for a specific role
+POST	/download-pdf	Download tailored resume
+GET	/history	Retrieve analysis history
 Contributing
-Contributions are welcome! Here's how to get started:
+
+Contributions are welcome.
+
+Typical workflow:
 
 Fork the repository
-Create a feature branch (git checkout -b feature/amazing-feature)
-Commit your changes (git commit -m 'Add amazing feature')
-Push to the branch (git push origin feature/amazing-feature)
-Open a Pull Request
-License
-This project is licensed under the MIT License — see the 
 
-LICENSE
- file for details.
+Create a feature branch
+
+Commit your changes
+
+Push the branch
+
+Open a Pull Request
+
+License
+
+This project is licensed under the MIT License.
 
 Team
+
 Built by the NOVA ESTEEM team.
