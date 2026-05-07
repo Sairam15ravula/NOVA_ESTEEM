@@ -1,151 +1,130 @@
-# NOVA ESTEEM
-NOVA ESTEEM is an AI-powered resume intelligence platform that analyzes how well a candidate's resume aligns with a job description using natural language processing and machine learning.
+# NOVA ESTEEM — NLP Resume-to-Job Similarity Platform
 
-The platform combines semantic similarity scoring, skill extraction, personality trait analysis, and LLM-powered rewriting to provide actionable feedback and automatically generate optimized resumes.
-
----
-
-## Key Highlights
-
-• Semantic resume-job matching using Sentence Transformers  
-• Hybrid scoring system combining embeddings and keyword analysis  
-• Personality trait inference from resume language  
-• Automated gap detection and rejection risk assessment  
-• LLM-powered resume rewriting and ATS optimization
+> A semantic intelligence engine that analyses how well a resume matches a job description — and tells you exactly what's missing.
 
 ---
 
-## Problem Statement
+## The problem
 
-Job seekers often submit resumes that are poorly aligned with job descriptions, leading to automatic rejection by Applicant Tracking Systems (ATS).
-
-Without automated analysis tools, candidates lack visibility into:
-
-- which required skills are missing
-- how well their experience matches the role
-- how their resume language aligns with employer expectations
-
-NOVA ESTEEM provides a data-driven system that quantifies resume alignment and generates actionable recommendations.
+Generic resume advice ("add more keywords") doesn't work because it ignores context. A resume for a "Data Scientist at a fintech startup" should read very differently from one for a "Data Scientist at a research lab" — even if the job titles are identical. NOVA ESTEEM treats this as an NLP similarity problem, not a keyword matching problem.
 
 ---
 
-## System Architecture
+## How it works
 
+### Stage 1 — Semantic embedding
+Both the resume and the job description are encoded using **Sentence Transformers** (`all-MiniLM-L6-v2`). This captures contextual meaning, not just surface keywords — so "built anomaly detection systems" correctly aligns with "experience in unsupervised ML" even though no words overlap.
 
-Resume Upload
-↓
-PDF Parsing
-↓
-Text Preprocessing
-↓
-Skill Extraction
-↓
-Semantic Similarity Analysis
-↓
-Personality Trait Analysis
-↓
-Gap Detection
-↓
-Rejection Risk Assessment
-↓
-LLM Resume Tailoring
+### Stage 2 — Hybrid scoring
+A pure cosine similarity score can be gamed by padding a resume with buzzwords. NOVA ESTEEM uses a **hybrid scoring system**:
 
+| Component | Method | Weight |
+|---|---|---|
+| Contextual similarity | Sentence Transformer cosine similarity | 60% |
+| Keyword coverage | TF-IDF keyword extraction + overlap | 25% |
+| Skill gap penalty | Named entity matching on technical terms | 15% |
+
+### Stage 3 — Skill gap report
+The output isn't just a score — it's a **ranked skill-gap report**:
+- Skills present in the JD but absent from the resume (critical gaps)
+- Skills partially matched (contextually similar but not explicit)
+- Skills present in the resume that are irrelevant to this JD
 
 ---
 
-## Machine Learning Methodology
+## Architecture
 
-### Sentence Embeddings
-
-Model: `all-MiniLM-L6-v2`
-
-Used to compute semantic similarity between resume and job description.
-
-### Technical Score
-
-
-Technical Score =
-0.6 × Semantic Similarity
-
-0.4 × Skill Match Ratio
-
-
-### Personality Trait Analysis
-
-Traits evaluated:
-
-- leadership
-- teamwork
-- communication
-- learning ability
-- problem solving
-
-Scores computed using cosine similarity against anchor sentences.
+```
+Resume (PDF / text)     Job Description (text / URL)
+        ↓                          ↓
+   Text Extraction            Text Cleaning
+        ↓                          ↓
+        └──────── Sentence Transformer Encoder ────────┘
+                            ↓
+                  Cosine Similarity Score
+                            ↓
+                  TF-IDF Keyword Extraction
+                            ↓
+                  Skill Gap Analysis (NER)
+                            ↓
+                  Hybrid Score Calculation
+                            ↓
+              Ranked Skill-Gap Report (JSON + UI)
+```
 
 ---
 
-## Core Features
+## Tech stack
 
-• Resume-JD semantic similarity scoring  
-• Skill extraction across multiple domains  
-• Section-level resume quality evaluation  
-• Gap analysis with severity levels  
-• Rejection risk classification  
-• AI-generated resume tailoring  
-• PDF export for optimized resumes
-
----
-
-## Tech Stack
-
-Backend  
-- FastAPI  
-- Sentence Transformers  
-- SQLite  
-- JWT Authentication  
-
-Frontend  
-- Next.js  
-- React  
-- Recharts  
-
-AI  
-- Sentence Transformers  
-- GPT-4o-mini  
-- Ollama (fallback)
+| Component | Technology |
+|---|---|
+| Semantic embeddings | Sentence Transformers (`all-MiniLM-L6-v2`) |
+| Keyword extraction | TF-IDF (Scikit-learn) |
+| NER for skill matching | spaCy / regex patterns |
+| PDF parsing | PyMuPDF |
+| Backend API | FastAPI |
+| Frontend | React |
 
 ---
 
-## Repository Structure
+## Getting started
 
+```bash
+git clone https://github.com/Bhuvan1205/nova-esteem.git
+cd nova-esteem
 
-NOVA_ESTEEM
-│
-├── backend
-│ ├── main.py
-│ ├── models.py
-│ ├── database.py
-│ └── services
-│
-├── frontend
-│ ├── app
-│ ├── components
-│ └── services
-│
-└── README.md
+# Install dependencies
+pip install -r requirements.txt
+python -m spacy download en_core_web_sm
 
+# Run the API
+uvicorn main:app --reload
+
+# Frontend
+cd frontend && npm install && npm run dev
+```
 
 ---
 
-## Future Improvements
+## Example output
 
-• Fine-tuned embedding models for resume-JD similarity  
-• Expanded skill taxonomy using external datasets  
-• Multi-language resume analysis  
-• ATS platform simulation
+```json
+{
+  "overall_match_score": 0.73,
+  "contextual_similarity": 0.81,
+  "keyword_coverage": 0.58,
+  "critical_gaps": [
+    "PyTorch",
+    "model deployment",
+    "A/B testing"
+  ],
+  "partial_matches": [
+    "anomaly detection ↔ unsupervised learning",
+    "feature engineering ↔ data preprocessing"
+  ],
+  "irrelevant_resume_sections": [
+    "C programming"
+  ]
+}
+```
 
 ---
 
-## Authors
+## Why this matters
 
-NOVA ESTEEM Team
+This project is self-referential in the best way: I built a resume analysis tool while actively job searching, which means I could iterate on it using real job descriptions I was applying to. Every design decision was validated against actual hiring signal.
+
+---
+
+## Future improvements
+
+- Fine-tune the embedding model on a domain-specific (tech job) corpus
+- Add support for multi-role comparison ("which of these 5 JDs am I best suited for?")
+- Integrate ATS simulation to flag formatting issues alongside content gaps
+- Build a browser extension that scores the current job listing page against your stored resume
+
+---
+
+## Author
+
+**Bhuvanesh Vinjamuri** · [GitHub](https://github.com/Bhuvan1205) · [LinkedIn](https://linkedin.com/in/bhuvaneshvinjamuri)
